@@ -751,9 +751,33 @@ button { font: inherit; cursor: pointer; }
 
 /* ---------- TABLET CHICA (900px) ---------- */
 @media (max-width: 900px) {
-  .ficha__interior { grid-template-columns: 1fr; }
-  .ficha__visual { padding: 0; }
-  .ficha__visual img { max-height: 45vh; }
+  .ficha {
+    max-height: 92vh;
+  }
+
+  .ficha__interior {
+    grid-template-columns: 1fr;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  .ficha__visual {
+    background: var(--papel);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    min-height: auto;
+  }
+
+  .ficha__visual img {
+    width: 100%;
+    height: auto;
+    max-height: 55vh;
+    object-fit: contain;
+    object-position: center;
+    border-radius: var(--radio);
+  }
 }
 
 /* ---------- SUBMENÚ — solo desktop ---------- */
@@ -798,7 +822,6 @@ button { font: inherit; cursor: pointer; }
 @media (max-width: 820px) {
   .barra__toggle { display: block; }
 
-  /* ---------- MENÚ ---------- */
   .menu {
     display: none;
     position: absolute;
@@ -816,7 +839,6 @@ button { font: inherit; cursor: pointer; }
     z-index: 40;
     box-shadow: 0 12px 32px rgba(26, 25, 22, .08);
     white-space: normal;
-    flex-wrap: wrap;
   }
   .menu.abierto { display: flex; }
   .menu > a {
@@ -833,7 +855,6 @@ button { font: inherit; cursor: pointer; }
   }
   .barra { position: relative; }
 
-  /* ---------- SUBMENÚ ---------- */
   .menu__submenu {
     position: relative;
     width: 100%;
@@ -899,7 +920,6 @@ button { font: inherit; cursor: pointer; }
     color: var(--tinta);
   }
 
-  /* ---------- FILTROS ---------- */
   .filtros {
     top: 0;
     padding: 14px 0;
@@ -941,7 +961,6 @@ button { font: inherit; cursor: pointer; }
     width: 100%;
   }
 
-  /* ---------- CABECERA ---------- */
   .catalogo__cabecera { padding: 60px 0 36px; }
   .catalogo__cabecera-grilla {
     grid-template-columns: 1fr;
@@ -958,18 +977,15 @@ button { font: inherit; cursor: pointer; }
   }
   .catalogo__cabecera h1 { font-size: clamp(36px, 6vw, 52px); }
 
-  /* ---------- GRILLA ---------- */
   .grilla {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
 
-  /* ---------- FICHA ---------- */
   .ficha { width: min(680px, 94vw); }
   .ficha__texto { padding: 26px 24px 24px; }
   .ficha__texto h3 { font-size: 30px; }
 
-  /* ---------- PIE ---------- */
   .pie { padding: 60px 0 28px; margin-top: 56px; }
   .pie__grilla { grid-template-columns: 1fr; gap: 32px; }
   .pie__legal { margin-top: 40px; padding-top: 18px; flex-direction: column; }
@@ -989,7 +1005,18 @@ button { font: inherit; cursor: pointer; }
   .grilla { grid-template-columns: 1fr; gap: 14px; }
   .tarjeta__visual { height: 200px; }
 
-  .ficha__visual img { max-height: 38vh; }
+  /* ---------- FICHA — imagen completa ---------- */
+  .ficha__visual {
+    padding: 16px;
+  }
+  .ficha__visual img {
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    object-fit: contain;
+    object-position: center;
+  }
+
   .ficha__texto { padding: 22px 20px 22px; }
   .ficha__texto h3 { font-size: 26px; }
   .ficha__lista dt { min-width: 78px; font-size: 12.5px; }
