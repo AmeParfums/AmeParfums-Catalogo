@@ -457,114 +457,158 @@ const CONFIG = {
     });
   }
   
-  /* =======================================================
-     CARRUSEL DE DESTACADOS
-     ======================================================= */
-  
-  const pistaCarrusel = document.getElementById("carruselPista");
-  
-  if (pistaCarrusel && typeof PERFUMES !== "undefined") {
-  
-    const btnPrev = document.getElementById("carruselPrev");
-    const btnNext = document.getElementById("carruselNext");
-    const puntos  = document.getElementById("carruselPuntos");
-  
-    const codigosDestacados = ["N148", "N100", "N194", "N36", "N88", "N81", "N213", "N44"];
-    const codigosUnicos = [...new Set(codigosDestacados)];
-  
-    const destacados = codigosUnicos
-      .map(c => PERFUMES.find(p => p.codigo === c))
-      .filter(Boolean);
-  
-    pistaCarrusel.innerHTML = destacados.map(tarjetaHTML).join("");
-  
-    pistaCarrusel.addEventListener("click", e => {
+/* =======================================================
+   DESTACADOS EN LA PORTADA — CARRUSEL (solo en index.html)
+   ======================================================= */
+
+const pistaCarrusel = document.getElementById("carruselPista");
+
+if (pistaCarrusel && typeof PERFUMES !== "undefined") {
+
+  const btnPrev = document.getElementById("carruselPrev");
+  const btnNext = document.getElementById("carruselNext");
+  const puntos  = document.getElementById("carruselPuntos");
+  const ficha   = document.getElementById("ficha");
+
+  const codigosDestacados = ["N148", "N100", "N194", "N36", "N88", "N81", "N213", "N44"];
+  const codigosUnicos = [...new Set(codigosDestacados)];
+
+  const destacados = codigosUnicos
+    .map(c => PERFUMES.find(p => p.codigo === c))
+    .filter(Boolean);
+
+  pistaCarrusel.innerHTML = destacados.map(tarjetaHTML).join("");
+
+  /* --- Función para abrir la ficha en el index --- */
+  function abrirFichaIndex(codigo) {
+    const p = PERFUMES.find(x => x.codigo === codigo);
+    if (!p || !ficha) return;
+
+    ficha.innerHTML = `
+      <button class="ficha__cerrar" id="cerrarFicha" aria-label="Cerrar">&times;</button>
+      <div class="ficha__interior tarjeta--${p.categoria}">
+        <div class="ficha__visual">${visualPerfume(p, "ficha")}</div>
+        <div class="ficha__texto">
+          <span class="ficha__codigo">Extracto ${p.codigo}</span>
+          <p class="ficha__inspirado">Inspirado en</p>
+          <h3>${p.nombre}</h3>
+          <p class="ficha__ref">de ${p.referencia}</p>
+          <dl class="ficha__lista">
+            <div><dt>Familia</dt><dd>${p.familia}</dd></div>
+            <div><dt>Perfil</dt><dd>${p.perfil}</dd></div>
+            <div><dt>Uso</dt><dd>${p.uso}</dd></div>
+            <div><dt>Género</dt><dd>${p.categoria[0].toUpperCase() + p.categoria.slice(1)}</dd></div>
+          </dl>
+          ${bloquePrecios(p)}
+          <p class="ficha__nota">${p.nota}</p>
+          <div class="ficha__acciones">
+            <a class="boton" target="_blank" rel="noopener"
+               href="${enlaceWhatsApp(`Hola! Quiero consultar precio y disponibilidad de ${p.nombre} (extracto ${p.codigo}).`)}">
+              Consultar por WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>`;
+
+    ficha.showModal();
+    document.getElementById("cerrarFicha").addEventListener("click", () => ficha.close());
+  }
+
+  /* --- Click en una tarjeta del carrusel → abre la ficha --- */
+  pistaCarrusel.addEventListener("click", e => {
+    const tarjeta = e.target.closest("[data-codigo]");
+    if (tarjeta) abrirFichaIndex(tarjeta.dataset.codigo);
+  });
+
+  /* --- Soporte para teclado --- */
+  pistaCarrusel.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
       const tarjeta = e.target.closest("[data-codigo]");
       if (tarjeta) {
-        window.location.href = `catalogo.html#${tarjeta.dataset.codigo}`;
+        e.preventDefault();
+        abrirFichaIndex(tarjeta.dataset.codigo);
       }
-    });
-  
-    pistaCarrusel.addEventListener("keydown", e => {
-      if (e.key === "Enter" || e.key === " ") {
-        const tarjeta = e.target.closest("[data-codigo]");
-        if (tarjeta) {
-          e.preventDefault();
-          window.location.href = `catalogo.html#${tarjeta.dataset.codigo}`;
-        }
-      }
-    });
-  
-    const tarjetas = pistaCarrusel.querySelectorAll(".tarjeta");
-    const GAP = 20;
-  
-    function cantidadVisible() {
-      const anchoPista = pistaCarrusel.clientWidth;
-      const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 1;
-      return Math.max(1, Math.round(anchoPista / (anchoTarjeta + GAP)));
     }
-  
-    function pasoScroll() {
-      const visibles = cantidadVisible();
-      const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 0;
-      return visibles * (anchoTarjeta + GAP);
-    }
-  
-    function pintarPuntos() {
-      const visibles = cantidadVisible();
-      const totalPaginas = Math.ceil(tarjetas.length / visibles);
-      puntos.innerHTML = Array.from({ length: totalPaginas }, (_, i) =>
-        `<button class="carrusel__punto" data-pagina="${i}" aria-label="Ir a la página ${i + 1}"></button>`
-      ).join("");
-  
-      puntos.querySelectorAll(".carrusel__punto").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const pagina = parseInt(btn.dataset.pagina, 10);
-          const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 0;
-          pistaCarrusel.scrollTo({
-            left: pagina * visibles * (anchoTarjeta + GAP),
-            behavior: "smooth"
-          });
+  });
+
+  /* --- Cerrar la ficha al hacer click en el backdrop --- */
+  if (ficha) {
+    ficha.addEventListener("click", e => {
+      if (e.target === ficha) ficha.close();
+    });
+  }
+
+  /* --- El resto del carrusel (puntos, flechas, responsive) --- */
+  const tarjetas = pistaCarrusel.querySelectorAll(".tarjeta");
+  const GAP = 20;
+
+  function cantidadVisible() {
+    const anchoPista = pistaCarrusel.clientWidth;
+    const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 1;
+    return Math.max(1, Math.round(anchoPista / (anchoTarjeta + GAP)));
+  }
+
+  function pasoScroll() {
+    const visibles = cantidadVisible();
+    const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 0;
+    return visibles * (anchoTarjeta + GAP);
+  }
+
+  function pintarPuntos() {
+    const visibles = cantidadVisible();
+    const totalPaginas = Math.ceil(tarjetas.length / visibles);
+    puntos.innerHTML = Array.from({ length: totalPaginas }, (_, i) =>
+      `<button class="carrusel__punto" data-pagina="${i}" aria-label="Ir a la página ${i + 1}"></button>`
+    ).join("");
+
+    puntos.querySelectorAll(".carrusel__punto").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const pagina = parseInt(btn.dataset.pagina, 10);
+        const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 0;
+        pistaCarrusel.scrollTo({
+          left: pagina * visibles * (anchoTarjeta + GAP),
+          behavior: "smooth"
         });
       });
-  
-      actualizarPuntos();
-    }
-  
-    function actualizarPuntos() {
-      const visibles = cantidadVisible();
-      const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 0;
-      const paso = (anchoTarjeta + GAP) * visibles;
-      const paginaActual = paso > 0 ? Math.round(pistaCarrusel.scrollLeft / paso) : 0;
-  
-      puntos.querySelectorAll(".carrusel__punto").forEach((btn, i) => {
-        btn.setAttribute("aria-current", i === paginaActual ? "true" : "false");
-      });
-  
-      const maxScroll = pistaCarrusel.scrollWidth - pistaCarrusel.clientWidth - 2;
-      btnPrev.disabled = pistaCarrusel.scrollLeft <= 2;
-      btnNext.disabled = pistaCarrusel.scrollLeft >= maxScroll;
-    }
-  
-    btnPrev.addEventListener("click", () => {
-      pistaCarrusel.scrollBy({ left: -pasoScroll(), behavior: "smooth" });
     });
-    btnNext.addEventListener("click", () => {
-      pistaCarrusel.scrollBy({ left: pasoScroll(), behavior: "smooth" });
-    });
-  
-    pistaCarrusel.addEventListener("scroll", () => {
-      window.requestAnimationFrame(actualizarPuntos);
-    });
-  
-    let timeoutResize;
-    window.addEventListener("resize", () => {
-      clearTimeout(timeoutResize);
-      timeoutResize = setTimeout(pintarPuntos, 150);
-    });
-  
-    pintarPuntos();
+
+    actualizarPuntos();
   }
+
+  function actualizarPuntos() {
+    const visibles = cantidadVisible();
+    const anchoTarjeta = tarjetas[0]?.getBoundingClientRect().width || 0;
+    const paso = (anchoTarjeta + GAP) * visibles;
+    const paginaActual = paso > 0 ? Math.round(pistaCarrusel.scrollLeft / paso) : 0;
+
+    puntos.querySelectorAll(".carrusel__punto").forEach((btn, i) => {
+      btn.setAttribute("aria-current", i === paginaActual ? "true" : "false");
+    });
+
+    const maxScroll = pistaCarrusel.scrollWidth - pistaCarrusel.clientWidth - 2;
+    btnPrev.disabled = pistaCarrusel.scrollLeft <= 2;
+    btnNext.disabled = pistaCarrusel.scrollLeft >= maxScroll;
+  }
+
+  btnPrev.addEventListener("click", () => {
+    pistaCarrusel.scrollBy({ left: -pasoScroll(), behavior: "smooth" });
+  });
+  btnNext.addEventListener("click", () => {
+    pistaCarrusel.scrollBy({ left: pasoScroll(), behavior: "smooth" });
+  });
+
+  pistaCarrusel.addEventListener("scroll", () => {
+    window.requestAnimationFrame(actualizarPuntos);
+  });
+
+  let timeoutResize;
+  window.addEventListener("resize", () => {
+    clearTimeout(timeoutResize);
+    timeoutResize = setTimeout(pintarPuntos, 150);
+  });
+
+  pintarPuntos();
+}
   
   /* =======================================================
      CARRUSEL DE TESTIMONIOS
