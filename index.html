@@ -162,6 +162,12 @@ button { font: inherit; cursor: pointer; }
 
 .menu { display: flex; align-items: center; gap: 30px; }
 
+.menu > a,
+.menu .boton,
+.menu__submenu-boton {
+  white-space: nowrap;
+}
+
 .menu > a {
   font-size: 13.5px;
   font-weight: 400;
@@ -211,39 +217,6 @@ button { font: inherit; cursor: pointer; }
 
 .menu__submenu-boton i { font-size: 11px; transition: transform .25s ease; }
 .menu__submenu-boton[aria-expanded="true"] i { transform: rotate(180deg); }
-
-.menu__submenu-lista {
-  position: absolute;
-  top: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-6px);
-  min-width: 220px;
-  background: var(--papel);
-  border: 1px solid var(--linea);
-  border-radius: 10px;
-  padding: 8px 0;
-  box-shadow: 0 12px 32px rgba(26,25,22,.10);
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .25s ease, transform .25s ease, visibility .25s;
-  z-index: 60;
-}
-.menu__submenu-lista a {
-  padding: 10px 20px;
-  font-size: 13.5px;
-  color: var(--tinta-suave);
-  transition: background .2s, color .2s;
-}
-.menu__submenu-lista a:hover { background: var(--piedra); color: var(--tinta); }
-
-.menu__submenu.abierto .menu__submenu-lista,
-.menu__submenu:hover .menu__submenu-lista {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
 
 /* =======================================================
    PORTADA
@@ -544,7 +517,7 @@ button { font: inherit; cursor: pointer; }
   flex-shrink: 0;
 }
 
-/* ---------- Carrusel ---------- */
+/* ---------- Testimonios carrusel ---------- */
 
 .carrusel {
   position: relative;
@@ -618,7 +591,7 @@ button { font: inherit; cursor: pointer; }
   transform: scale(1.2);
 }
 
-/* ---------- Testimonios carrusel ---------- */
+/* ---------- Testimonios ---------- */
 
 .carrusel--testimonios .carrusel__pista { gap: 32px; }
 
@@ -682,8 +655,15 @@ button { font: inherit; cursor: pointer; }
   overflow: hidden;
   text-align: left;
   transition: border-color .25s ease, transform .25s ease;
+  cursor: pointer;
 }
 .tarjeta:hover { border-color: var(--tinta); transform: translateY(-3px); }
+
+.tarjeta:focus-visible {
+  outline: 2px solid var(--verde);
+  outline-offset: 3px;
+  border-color: var(--verde);
+}
 
 .tarjeta__visual {
   position: relative;
@@ -776,17 +756,169 @@ button { font: inherit; cursor: pointer; }
   color: var(--tinta-suave);
 }
 .tarjeta__ver {
-  background: none;
-  border: none;
   border-bottom: 1px solid var(--verde);
   padding: 0 0 2px;
   font-size: 12px;
   font-weight: 500;
   color: var(--verde);
+  transition: color .2s, border-color .2s;
 }
-.tarjeta__ver:hover { color: var(--verde-claro); border-color: var(--verde-claro); }
+.tarjeta:hover .tarjeta__ver {
+  color: var(--verde-claro);
+  border-color: var(--verde-claro);
+}
 
 .mas { display: flex; justify-content: center; margin-top: 52px; }
+
+/* =======================================================
+   FICHA (modal)
+   ======================================================= */
+
+.ficha {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(1000px, 94vw);
+  max-height: 90vh;
+  overflow: hidden;
+  border: none;
+  padding: 0;
+  background: var(--papel);
+  border-radius: var(--radio);
+  color: var(--tinta);
+}
+.ficha::backdrop { background: rgba(26, 25, 22, .55); backdrop-filter: blur(3px); }
+
+.ficha__interior {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.ficha__visual {
+  background: var(--papel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ficha__visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ficha__texto { padding: 34px 34px 30px; }
+
+.ficha__codigo {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.ficha__inspirado {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+  margin-top: 16px;
+  margin-bottom: 2px;
+}
+
+.ficha__texto h3 { font-size: 38px; margin: 0 0 2px; }
+
+.ficha__ref {
+  color: var(--tinta-suave);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.ficha__lista { border-top: 1px solid var(--linea); margin-bottom: 20px; }
+.ficha__lista div {
+  display: flex;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--linea);
+  font-size: 14px;
+}
+.ficha__lista dt { min-width: 92px; color: var(--tinta-suave); font-size: 13px; }
+.ficha__lista dd { flex: 1; }
+
+.ficha__precios {
+  border-top: 1px solid var(--linea);
+  padding-top: 18px;
+  margin-bottom: 22px;
+}
+.ficha__precios h4 {
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+  margin-bottom: 12px;
+}
+.ficha__precios ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.ficha__precios li {
+  background: var(--piedra);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+.ficha__precio-ml {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+.ficha__precio-valor {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--tinta);
+  line-height: 1;
+}
+
+.ficha__nota {
+  background: var(--piedra);
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--tinta-suave);
+  margin-bottom: 22px;
+}
+.ficha__acciones { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.ficha__cerrar {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: rgba(255,255,255,.85);
+  border: 1px solid var(--linea);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  line-height: 1;
+  font-size: 16px;
+  z-index: 3;
+}
 
 /* =======================================================
    PIE
@@ -849,7 +981,6 @@ button { font: inherit; cursor: pointer; }
    RESPONSIVE
    ======================================================= */
 
-/* ---------- DESKTOP MEDIANO (1100px) ---------- */
 @media (max-width: 1100px) {
   .menu { gap: 16px; }
   .menu > a { font-size: 12.5px; }
@@ -857,26 +988,26 @@ button { font: inherit; cursor: pointer; }
   .menu__submenu-boton { font-size: 12.5px; }
 }
 
-/* ---------- TABLET (1000px) ---------- */
 @media (max-width: 1000px) {
   .grilla { grid-template-columns: repeat(3, 1fr); }
+  .portada__grilla { grid-template-columns: 1fr; gap: 48px; }
+  .vitrina { min-height: 380px; aspect-ratio: 16 / 10; }
   .pie__grilla { grid-template-columns: 1fr 1fr; }
-  .catalogo__cabecera-grilla { grid-template-columns: 1fr; gap: 40px; }
-  .catalogo__cabecera-logo img { max-width: 340px; margin-inline: auto; }
+  .beneficios { grid-template-columns: repeat(2, 1fr); }
+
+  .carrusel__pista .tarjeta { flex: 0 0 calc((100% - 40px) / 3); }
+  .carrusel--testimonios .testimonio { flex: 0 0 calc((100% - 48px) / 2); }
+  .carrusel__flecha--prev { left: -14px; }
+  .carrusel__flecha--next { right: -14px; }
 }
 
-/* ---------- TABLET CHICA (900px) ---------- */
 @media (max-width: 900px) {
-  .ficha {
-    max-height: 92vh;
-  }
-
+  .ficha { max-height: 92vh; }
   .ficha__interior {
     grid-template-columns: 1fr;
     max-height: 92vh;
     overflow-y: auto;
   }
-
   .ficha__visual {
     background: var(--papel);
     display: flex;
@@ -885,7 +1016,6 @@ button { font: inherit; cursor: pointer; }
     padding: 24px;
     min-height: auto;
   }
-
   .ficha__visual img {
     width: 100%;
     height: auto;
@@ -934,21 +1064,6 @@ button { font: inherit; cursor: pointer; }
   }
 }
 
-
-@media (max-width: 1000px) {
-  .grilla { grid-template-columns: repeat(3, 1fr); }
-  .portada__grilla { grid-template-columns: 1fr; gap: 48px; }
-  .vitrina { min-height: 380px; aspect-ratio: 16 / 10; }
-  .pie__grilla { grid-template-columns: 1fr 1fr; }
-  .beneficios { grid-template-columns: repeat(2, 1fr); }
-
-  .carrusel__pista .tarjeta { flex: 0 0 calc((100% - 40px) / 3); }
-  .carrusel--testimonios .testimonio { flex: 0 0 calc((100% - 48px) / 2); }
-  .carrusel__flecha--prev { left: -14px; }
-  .carrusel__flecha--next { right: -14px; }
-}
-
-/* ---------- MÓVIL (820px) ---------- */
 @media (max-width: 820px) {
   .barra__toggle { display: block; }
 
@@ -1026,9 +1141,7 @@ button { font: inherit; cursor: pointer; }
     min-width: 0 !important;
   }
 
-  .menu__submenu.abierto .menu__submenu-lista {
-    max-height: 400px;
-  }
+  .menu__submenu.abierto .menu__submenu-lista { max-height: 400px; }
 
   .menu__submenu-lista a {
     display: block;
@@ -1046,129 +1159,41 @@ button { font: inherit; cursor: pointer; }
   }
 
   .menu__submenu-lista a:hover,
-  .menu__submenu-lista a:active {
-    color: var(--tinta);
-  }
+  .menu__submenu-lista a:active { color: var(--tinta); }
 
-  .filtros {
-    top: 0;
-    padding: 14px 0;
-    margin-bottom: 32px;
-  }
+  .portada { padding: 60px 0 48px; }
+  .portada__grilla { grid-template-columns: 1fr; gap: 40px; }
+  .portada h1 { font-size: clamp(40px, 9vw, 60px); }
+  .portada__texto { font-size: 15px; margin-bottom: 32px; }
+  .vitrina { aspect-ratio: 16 / 10; min-height: 280px; }
 
-  .filtros__fila {
-    justify-content: center;
-    text-align: center;
-  }
+  .grilla { grid-template-columns: repeat(2, 1fr); }
+  .categorias { grid-template-columns: 1fr; }
+  .pasos { grid-template-columns: 1fr; gap: 20px; }
+  .beneficios { grid-template-columns: 1fr; }
+  .datos__grilla { grid-template-columns: 1fr; }
+  .dato { border-left: none; border-top: 1px solid var(--linea); padding: 24px 22px; }
+  .dato:first-child { border-top: none; }
 
-  .buscador {
-    flex: 1 1 100%;
-    max-width: 480px;
-    margin-inline: auto;
-  }
+  .seccion { padding: 64px 0; }
+  .seccion__titulo { flex-direction: column; gap: 12px; margin-bottom: 36px; }
+  .seccion__titulo h2 { font-size: clamp(28px, 5vw, 36px); }
 
-  .pastillas {
-    flex: 1 1 100%;
-    justify-content: center;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 4px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .pastillas::-webkit-scrollbar { display: none; }
-  .pastilla { flex-shrink: 0; }
+  .carrusel__pista .tarjeta { flex: 0 0 calc((100% - 20px) / 2); }
+  .carrusel--testimonios .testimonio { flex: 0 0 calc((100% - 32px) / 2); }
+  .carrusel__flecha { display: none; }
+  .carrusel__puntos { margin-top: 20px; }
 
-  .selector {
-    flex: 0 1 auto;
-    max-width: 280px;
-    margin-inline: auto;
-  }
+  .paso { padding: 24px 22px; gap: 14px; }
+  .paso__info h3 { font-size: 21px; }
+  .paso__icono { font-size: 28px; }
 
-  .conteo {
-    text-align: center;
-    margin-left: 0;
-    width: 100%;
-  }
+  .cita { padding: 14px 0; }
+  .cita p { font-size: clamp(18px, 4.5vw, 26px); }
 
-  .catalogo__cabecera { padding: 60px 0 36px; }
-  .catalogo__cabecera-grilla {
-    grid-template-columns: 1fr;
-    gap: 32px;
-    text-align: center;
-  }
-  .catalogo__cabecera p {
-    max-width: 100%;
-    margin-inline: auto;
-  }
-  .catalogo__cabecera-logo img {
-    max-width: 300px;
-    margin-inline: auto;
-  }
-  .catalogo__cabecera h1 { font-size: clamp(36px, 6vw, 52px); }
-
-  .grilla {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-
-  .ficha { width: min(680px, 94vw); }
-  .ficha__texto { padding: 26px 24px 24px; }
-  .ficha__texto h3 { font-size: 30px; }
-
-  .pie { padding: 60px 0 28px; margin-top: 56px; }
+  .pie { padding: 60px 0 28px; }
   .pie__grilla { grid-template-columns: 1fr; gap: 32px; }
   .pie__legal { margin-top: 40px; padding-top: 18px; flex-direction: column; }
-}
-
-/* ---------- MÓVIL CHICO (540px) ---------- */
-@media (max-width: 540px) {
-  .envoltorio { padding-inline: 20px; }
-  .catalogo__cabecera { padding: 48px 0 28px; }
-  .catalogo__cabecera h1 { font-size: clamp(30px, 8vw, 42px); }
-  .catalogo__cabecera p { font-size: 14px; }
-  .catalogo__cabecera-logo img { max-width: 240px; }
-
-  .filtros { padding: 12px 0; }
-  .selector { flex: 1 1 100%; }
-  .conteo { font-size: 11px; }
-  .grilla { grid-template-columns: 1fr; gap: 14px; }
-  .tarjeta__visual { height: 200px; }
-
-  /* ---------- FICHA — imagen completa ---------- */
-  .ficha__visual {
-    padding: 16px;
-  }
-  .ficha__visual img {
-    width: 100%;
-    height: auto;
-    max-height: 50vh;
-    object-fit: contain;
-    object-position: center;
-  }
-
-  .ficha__texto { padding: 22px 20px 22px; }
-  .ficha__texto h3 { font-size: 26px; }
-  .ficha__lista dt { min-width: 78px; font-size: 12.5px; }
-  .ficha__lista dd { font-size: 13px; }
-
-  .ficha__precios ul { grid-template-columns: 1fr; }
-  .ficha__precios li {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
-
-  .pie { padding: 48px 0 24px; margin-top: 48px; }
-  .pie__legal { font-size: 11px; }
-  .flotante {
-    width: 48px;
-    height: 48px;
-    font-size: 22px;
-    right: 16px;
-    bottom: 16px;
-  }
 }
 
 @media (max-width: 540px) {
@@ -1200,6 +1225,26 @@ button { font: inherit; cursor: pointer; }
   .testimonio blockquote { font-size: 19px; }
 
   .seccion { padding: 52px 0; }
+
+  /* ---------- FICHA ---------- */
+  .ficha__visual { padding: 16px; }
+  .ficha__visual img {
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    object-fit: contain;
+  }
+  .ficha__texto { padding: 22px 20px 22px; }
+  .ficha__texto h3 { font-size: 26px; }
+  .ficha__lista dt { min-width: 78px; font-size: 12.5px; }
+  .ficha__lista dd { font-size: 13px; }
+  .ficha__precios ul { grid-template-columns: 1fr; }
+  .ficha__precios li {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
 
   .flotante { width: 48px; height: 48px; font-size: 22px; right: 16px; bottom: 16px; }
 }
@@ -1360,7 +1405,7 @@ button { font: inherit; cursor: pointer; }
   </div>
 </section>
 
-<!-- ============ DESTACADOS ============ -->
+<!-- ============ DESTACADOS (CARRUSEL) ============ -->
 <section class="seccion seccion--papel">
   <div class="envoltorio">
 
@@ -1391,6 +1436,9 @@ button { font: inherit; cursor: pointer; }
 
   </div>
 </section>
+
+<!-- ============ FICHA (modal) ============ -->
+<dialog class="ficha" id="ficha"></dialog>
 
 <!-- ============ POR QUÉ ELEGIRNOS ============ -->
 <section class="seccion">
@@ -1444,7 +1492,57 @@ button { font: inherit; cursor: pointer; }
   </div>
 </section>
 
+<!-- ============ TESTIMONIOS ============ -->
+<section class="seccion seccion--papel">
+  <div class="envoltorio">
 
+    <div class="seccion__titulo">
+      <h2>Lo que dicen nuestros clientes</h2>
+    </div>
+
+    <div class="carrusel carrusel--testimonios">
+      <button class="carrusel__flecha carrusel__flecha--prev" id="testiPrev" aria-label="Anterior">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <div class="carrusel__pista" id="testiPista">
+
+        <figure class="testimonio">
+          <blockquote>Me duró todo el día y el aroma es prácticamente igual al original. Ya encargué el segundo.</blockquote>
+          <figcaption><strong>María L.</strong><span>La Rioja</span></figcaption>
+        </figure>
+
+        <figure class="testimonio">
+          <blockquote>Me asesoraron por WhatsApp y acertaron justo con lo que buscaba. Atención de diez.</blockquote>
+          <figcaption><strong>Lucas P.</strong><span>Córdoba</span></figcaption>
+        </figure>
+
+        <figure class="testimonio">
+          <blockquote>El envío llegó rápido y bien embalado. El perfume es tal cual lo esperaba.</blockquote>
+          <figcaption><strong>Sofía R.</strong><span>Buenos Aires</span></figcaption>
+        </figure>
+
+        <figure class="testimonio">
+          <blockquote>Compré dos para regalar y quedaron encantados. Vuelvo a comprar seguro.</blockquote>
+          <figcaption><strong>Camila T.</strong><span>Rosario</span></figcaption>
+        </figure>
+
+        <figure class="testimonio">
+          <blockquote>La atención por WhatsApp fue muy rápida y me ayudaron a elegir. Excelente.</blockquote>
+          <figcaption><strong>Martín G.</strong><span>Mendoza</span></figcaption>
+        </figure>
+
+      </div>
+
+      <button class="carrusel__flecha carrusel__flecha--next" id="testiNext" aria-label="Siguiente">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="carrusel__puntos" id="testiPuntos"></div>
+
+  </div>
+</section>
 
 <!-- ============ CITA ============ -->
 <section class="cita">
@@ -1535,7 +1633,7 @@ button { font: inherit; cursor: pointer; }
           </li>
         </ul>
         <div class="pie__redes" style="margin-top:14px">
-          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" data-instagram aria-label="Instagram"><i class="bi bi-instagram"></i></a>
         </div>
       </div>
 
