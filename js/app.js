@@ -2,11 +2,9 @@
    CONFIGURACIÓN
    ======================================================= */
 
-   const CONFIG = {
+const CONFIG = {
     whatsapp: "5493834994971",
-    instagram: "https://instagram.com/",
-    facebook: "https://facebook.com/",
-    tiktok: "https://tiktok.com/",
+    instagram: "https://www.instagram.com/ame__parfums_",
     porPagina: 24,
   
     /* Precios por defecto para perfumes */
