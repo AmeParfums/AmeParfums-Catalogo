@@ -9,11 +9,16 @@
     tiktok: "https://tiktok.com/",
     porPagina: 24,
   
-    /* Precios por defecto (se pueden sobrescribir por perfume) */
+    /* Precios por defecto para perfumes */
     preciosDefault: {
-      "30ml": 45000,
-      "50ml": 65000,
-      "100ml": 90000
+      "30ml": 31000,
+      "50ml": 36000,
+      "100ml": 50000
+    },
+  
+    /* Precios específicos para bodysplash */
+    preciosBodysplash: {
+      "200ml": 32000
     }
   };
   
@@ -117,8 +122,6 @@
   
   /* =======================================================
      FUNCIÓN PARA DIBUJAR EL FRASCO O IMAGEN
-     contexto: "tarjeta" (default) o "ficha"
-     En la ficha usa p.imagenFicha si existe, si no cae a p.imagen
      ======================================================= */
   
   function visualPerfume(p, contexto = "tarjeta") {
@@ -142,10 +145,14 @@
   
   /* =======================================================
      FUNCIÓN PARA DIBUJAR LOS PRECIOS
+     Detecta si es bodysplash y muestra 200ml a $32.000
      ======================================================= */
   
   function bloquePrecios(p) {
-    const precios = p.precios || CONFIG.preciosDefault;
+    /* Si es bodysplash, usar precios de bodysplash */
+    const esBodysplash = p.subcategoria === "bodysplash";
+    const precios = p.precios || (esBodysplash ? CONFIG.preciosBodysplash : CONFIG.preciosDefault);
+  
     if (!precios) return "";
   
     const items = Object.entries(precios).map(([ml, valor]) => `
@@ -163,7 +170,7 @@
   }
   
   /* =======================================================
-     FUNCIÓN PARA DIBUJAR UNA TARJETA (HTML reutilizable)
+     FUNCIÓN PARA DIBUJAR UNA TARJETA
      ======================================================= */
   
   function tarjetaHTML(p) {
@@ -194,7 +201,7 @@
   }
   
   /* =======================================================
-     CATÁLOGO (solo corre en catalogo.html)
+     CATÁLOGO
      ======================================================= */
   
   const grilla = document.getElementById("grilla");
@@ -213,7 +220,6 @@
     let categoria = "todos";
     let visibles  = CONFIG.porPagina;
   
-    /* --- Cargar familias olfativas en el selector --- */
     const familias = [...new Set(
       PERFUMES.flatMap(p => p.familia.split("/").map(f => f.trim()))
     )].sort((a, b) => a.localeCompare(b, "es"));
@@ -225,20 +231,17 @@
       selFamilia.appendChild(op);
     });
   
-    /* --- Categoría desde la URL --- */
     const paramCategoria = new URLSearchParams(location.search).get("categoria")
       || location.hash.replace("#", "");
     if (["masculino", "femenino", "unisex", "bodysplash"].includes(paramCategoria)) {
       categoria = paramCategoria;
     }
   
-    /* --- Filtrado --- */
     function filtrar() {
       const texto = (buscador.value || "").toLowerCase().trim();
       const fam = selFamilia.value;
   
       let lista = PERFUMES.filter(p => {
-        /* Caso especial: bodysplash (solo femeninos con subcategoria bodysplash) */
         if (categoria === "bodysplash") {
           const okBodysplash = p.subcategoria === "bodysplash";
           const okFamilia = fam === "todas" || p.familia.toLowerCase().includes(fam.toLowerCase());
@@ -247,7 +250,6 @@
           return okBodysplash && okFamilia && okTexto;
         }
   
-        /* Caso general */
         const okCategoria = categoria === "todos" || p.categoria === categoria;
         const okFamilia = fam === "todas" || p.familia.toLowerCase().includes(fam.toLowerCase());
         const okTexto = !texto || [p.nombre, p.referencia, p.codigo, p.familia, p.perfil]
@@ -264,7 +266,6 @@
       return lista;
     }
   
-    /* --- Dibujar tarjetas --- */
     function pintar() {
       const lista = filtrar();
       const mostrar = lista.slice(0, visibles);
@@ -279,7 +280,6 @@
       grilla.innerHTML = mostrar.map(tarjetaHTML).join("");
     }
   
-    /* --- Ficha de detalle --- */
     function abrirFicha(codigo) {
       const p = PERFUMES.find(x => x.codigo === codigo);
       if (!p) return;
@@ -314,13 +314,11 @@
       document.getElementById("cerrarFicha").addEventListener("click", () => ficha.close());
     }
   
-    /* --- Click en cualquier parte de la tarjeta --- */
     grilla.addEventListener("click", e => {
       const tarjeta = e.target.closest("[data-codigo]");
       if (tarjeta) abrirFicha(tarjeta.dataset.codigo);
     });
   
-    /* --- Soporte para teclado (Enter / Espacio) --- */
     grilla.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") {
         const tarjeta = e.target.closest("[data-codigo]");
@@ -331,12 +329,10 @@
       }
     });
   
-    /* --- Cerrar la ficha al hacer click en el backdrop --- */
     ficha.addEventListener("click", e => {
       if (e.target === ficha) ficha.close();
     });
   
-    /* --- Eventos de los filtros --- */
     function reiniciar() {
       visibles = CONFIG.porPagina;
       pintar();
@@ -370,11 +366,10 @@
     });
   
     pintar();
-  
-  } /* ← cierra el if (grilla) */
+  }
   
   /* =======================================================
-     PÁGINAS DE CATEGORÍA (femeninos / masculinos / unisex)
+     PÁGINAS DE CATEGORÍA
      ======================================================= */
   
   const contenedorCategoria = document.getElementById("categoriaContenido");
@@ -444,13 +439,11 @@
       pintarEn(contenedorFrag, frags);
     }
   
-    /* --- Click en cualquier parte de la tarjeta --- */
     document.addEventListener("click", e => {
       const tarjeta = e.target.closest("[data-codigo]");
       if (tarjeta) abrirFichaCat(tarjeta.dataset.codigo);
     });
   
-    /* --- Soporte para teclado --- */
     document.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") {
         const tarjeta = e.target.closest("[data-codigo]");
@@ -467,7 +460,7 @@
   }
   
   /* =======================================================
-     DESTACADOS EN LA PORTADA — CARRUSEL (solo en index.html)
+     CARRUSEL DE DESTACADOS
      ======================================================= */
   
   const pistaCarrusel = document.getElementById("carruselPista");
@@ -487,7 +480,6 @@
   
     pistaCarrusel.innerHTML = destacados.map(tarjetaHTML).join("");
   
-    /* --- Al tocar una tarjeta, ir al catálogo con ese código --- */
     pistaCarrusel.addEventListener("click", e => {
       const tarjeta = e.target.closest("[data-codigo]");
       if (tarjeta) {
@@ -577,7 +569,7 @@
   }
   
   /* =======================================================
-     CARRUSEL DE TESTIMONIOS (index.html)
+     CARRUSEL DE TESTIMONIOS
      ======================================================= */
   
   const pistaTestimonios = document.getElementById("testiPista");
