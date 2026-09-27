@@ -80,7 +80,7 @@
       "uso": "Noche / invierno",
       "nota": "Para amantes del café y perfumes potentes.",
       "imagen": "A-MenPureCoffeCat.jpeg",
-      "imagenFicha": "A-menPureCoffeVertical.jpeg"
+      "imagenFicha": "A-MenPureCoffeVertical.jpeg"
     },
     {
       "codigo": "N12",
@@ -104,7 +104,7 @@
       "uso": "Noche / invierno",
       "nota": "Para amantes de perfumes intensos y gourmand.",
       "imagen": "A-MenPureMaltCat.jpeg",
-      "imagenFicha": "A-menPureMaltVertical.jpeg"
+      "imagenFicha": "A-MenPureMaltVertical.jpeg"
     },
     {
       "codigo": "N15",
