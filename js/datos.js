@@ -1570,7 +1570,7 @@
       "perfil": "Fresco, acuático, limpio",
       "uso": "Primavera / verano",
       "nota": "Clásico fresco para uso diario.",
-      "imagen": "coolWaterFemeninoCat.jpeg",
+      "imagen": "CoolWaterFemeninoCat.jpeg",
       "imagenFicha": "CoolWaterFemenino.jpeg"
     },
     {
@@ -1726,7 +1726,7 @@
       "perfil": "Floral, arroz, vainilla",
       "uso": "Noche",
       "nota": "Femenino dulce, cálido y envolvente.",
-      "imagen": "KenzoamourCat.jpeg",
+      "imagen": "KenzoAmourCat.jpeg",
       "imagenFicha": "KenzoAmour.jpeg"
     },
     {
@@ -1883,7 +1883,7 @@
       "uso": "Día y noche",
       "nota": "Muy vendible para quien busca feminidad y elegancia.",
       "imagen": "MissDiorCat.jpeg",
-      "imagenFicha": "MissDior.jpeg"
+      "imagenFicha": "MIssDior.jpeg"
     },
     {
       "codigo": "N113",
@@ -2410,8 +2410,8 @@
       "perfil": "Aromático, fresco, moderno",
       "uso": "Día y noche",
       "nota": "Moderno, versátil y fácil de usar.",
-      "imagen": "BornInRomaCat.jpeg",
-      "imagenFicha": "BornInRoma.jpeg"
+      "imagen": "BorninRomaCat.jpeg",
+      "imagenFicha": "BorninRoma.jpeg"
     },
     {
       "codigo": "N204",
