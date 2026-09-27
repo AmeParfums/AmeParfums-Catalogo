@@ -1834,7 +1834,7 @@
       "perfil": "Fresco, cítrico, veraniego",
       "uso": "Primavera / verano",
       "nota": "Perfecto para quien quiere frescura y sensación de verano.",
-      "imagen": "LightBlueFEmeninoCat.jpeg",
+      "imagen": "LightBlueFemeninoCat.jpeg",
       "imagenFicha": "LightBlueFemenino.jpeg"
     },
     {
